@@ -27,7 +27,7 @@ export function RecommendationTable({
   vacancyId: string;
   lockedBy?: string;
 }) {
-  const [picked, setPicked] = useState<string[]>(rows.slice(0, 2).map((r) => r.badge));
+  const [picked, setPicked] = useState<string[]>(rows.slice(0, 3).map((r) => r.badge));
   const [detail, setDetail] = useState(rows[0]?.badge);
   const active = rows.find((r) => r.badge === detail) ?? rows[0];
 

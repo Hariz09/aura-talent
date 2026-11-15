@@ -22,3 +22,7 @@ export interface ImportState {
 
 export const MAX_FILE_BYTES = 10 * 1024 * 1024;
 export const MIN_JUSTIFICATION = 50;
+
+/** A proposal sent to VP SDM must carry between 3 and 5 candidates. */
+export const MIN_CANDIDATES = 3;
+export const MAX_CANDIDATES = 5;

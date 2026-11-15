@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { submitProposal } from "@/lib/actions";
-import { MIN_JUSTIFICATION, type FormState } from "@/lib/form";
+import { MAX_CANDIDATES, MIN_CANDIDATES, MIN_JUSTIFICATION, type FormState } from "@/lib/form";
 import { FormMessage, SubmitButton } from "@/components/forms";
-import { Card, cn, inputClass } from "@/components/ui";
+import { Modal } from "@/components/modal";
+import { Card, buttonClass, cn, inputClass } from "@/components/ui";
 
 export interface PoolItem {
   badge: string;
@@ -42,11 +43,22 @@ export function ProposalForm({
   const addable = pool.filter((p) => !selected.includes(p.badge));
   const recAddable = addable.filter((p) => recommended.includes(p.badge));
   const add = (b: string) => b && setSelected((s) => (s.includes(b) ? s : [...s, b]));
-  const enough = selected.length >= 2;
+  const [rangeError, setRangeError] = useState(false);
+  const outOfRange = selected.length < MIN_CANDIDATES || selected.length > MAX_CANDIDATES;
   const noteOk = note.trim().length >= MIN_JUSTIFICATION;
 
   return (
-    <form action={action} className="space-y-6">
+    <form
+      action={action}
+      className="space-y-6"
+      onSubmit={(e) => {
+        const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
+        if (submitter?.value === "send" && outOfRange) {
+          e.preventDefault();
+          setRangeError(true);
+        }
+      }}
+    >
       <input type="hidden" name="vacancyId" value={vacancyId} />
       {selected.map((b) => (
         <input key={b} type="hidden" name="badge" value={b} />
@@ -171,20 +183,13 @@ export function ProposalForm({
 
         <Card tone="soft" className="flex flex-col">
           <h2 className="mb-4 text-[1.55rem] font-semibold text-brand">Siap dikirim ke VP SDM</h2>
-          <p className="space-y-1 text-[1.25rem] leading-relaxed">
-            <span className="block">{selected.length} kandidat dipilih</span>
-            <span className="block">Syarat wajib: Memenuhi</span>
-            <span className="block">Sumber pencalonan tercatat</span>
-            <span className="block">Duplikasi kandidat dicegah</span>
-          </p>
+          <p className="text-[1.25rem] leading-relaxed">{selected.length} kandidat dipilih</p>
           <p className="mt-8 text-[1.1rem] leading-relaxed text-muted">
             Dokumen berstatus Menunggu tidak menggugurkan pencalonan awal. Lengkapi sebelum persetujuan akhir PIHC.
           </p>
-          {!enough ? (
-            <p className="mt-6 text-[1.1rem] text-warn">
-              Jika kandidat kurang dari dua, tambah talenta sebelum mengirim usulan.
-            </p>
-          ) : null}
+          <p className={cn("mt-6 text-[1.1rem]", outOfRange ? "text-warn" : "text-muted")}>
+            Usulan harus memuat {MIN_CANDIDATES}–{MAX_CANDIDATES} kandidat.
+          </p>
           <p className="mt-auto pt-6 text-sm text-muted">
             Lowongan {vacancyCode} · {closeText}
           </p>
@@ -201,11 +206,31 @@ export function ProposalForm({
           <Link href="/hr/rekomendasi" className="font-semibold text-brand hover:underline">
             Kembali ke rekomendasi
           </Link>
-          <SubmitButton name="mode" value="send" disabled={!enough || !noteOk} pendingText="Mengirim…">
+          <SubmitButton name="mode" value="send" pendingText="Mengirim…">
             Kirim Usulan
           </SubmitButton>
         </div>
       </div>
+      {rangeError ? (
+        <Modal
+          title="Pengajuan gagal"
+          subtitle="Usulan belum dapat dikirim ke VP SDM"
+          width="max-w-[34rem]"
+          onClose={() => setRangeError(false)}
+        >
+          <p className="text-[1.2rem] leading-relaxed">
+            Jumlah kandidat harus {MIN_CANDIDATES}–{MAX_CANDIDATES}. Saat ini {selected.length} kandidat dipilih
+            {selected.length < MIN_CANDIDATES
+              ? `; tambahkan minimal ${MIN_CANDIDATES - selected.length} kandidat lagi.`
+              : `; kurangi ${selected.length - MAX_CANDIDATES} kandidat.`}
+          </p>
+          <div className="mt-6 flex justify-end">
+            <button type="button" onClick={() => setRangeError(false)} className={buttonClass("primary")}>
+              Mengerti
+            </button>
+          </div>
+        </Modal>
+      ) : null}
     </form>
   );
 }

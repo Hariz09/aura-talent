@@ -87,7 +87,7 @@ async function PersetujuanList({
                     {single ? getEmployee(p.candidates[0].badge)?.name : `${p.candidates.length} kandidat`}
                     {draft && single ? (
                       <div className="mt-1">
-                        <Pill tone="warn">Perlu minimal 2 kandidat</Pill>
+                        <Pill tone="warn">Perlu 3–5 kandidat</Pill>
                       </div>
                     ) : null}
                   </Td>
