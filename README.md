@@ -44,7 +44,7 @@ All accounts use the password **`password`**. They are also listed under "Akun d
 | `bhima` | Karyawan | Another Karyawan view |
 | `diandra`, `sari` | Karyawan | "Kategori belum dapat ditentukan" state (missing final grade / assessment) |
 | `hr` | HR + Karyawan | Everything under `/hr` |
-| `atasan` | Atasan + Karyawan | Subordinate matches, nominating, read-only status |
+| `atasan` | Atasan + Karyawan | Subordinate matches, nominating (sample: Rizky Pratama → Manajer Produksi), read-only status |
 | `vp` | VP SDM + Atasan + Karyawan | Three-role picker; first approval step |
 | `svp` | SVP SDM | Second approval step |
 | `direksi1` | Direksi 1 | Compare candidates and select one; view notes |
@@ -54,7 +54,7 @@ All accounts use the password **`password`**. They are also listed under "Akun d
 
 ### Suggested end-to-end walkthrough
 
-1. Log in as `hr` → **Pencalonan** → choose *Manajer Keuangan* → add 3–5 candidates (otherwise a "Pengajuan gagal" pop-up appears) and a note of 50+
+1. Log in as `hr` → **Pencalonan** → choose *Manajer Keuangan* → add 2–5 candidates (otherwise a "Pengajuan gagal" pop-up appears) and a note of 50+
    characters → **Kirim Usulan**.
 2. Approve in order as `vp`, `svp`, `direksi1` (select one candidate), `direksi2`, `direksi3`, `dirut`
    (designate), using **Menunggu keputusan** → **Tinjau**.
@@ -110,7 +110,7 @@ Where the Figma consistency findings (K-01 to K-11) conflict with individual fra
 the findings: one header (bell, name, role, Keluar), one menu per role, one tab style, consistent terms
 ("Dashboard", "VP SDM", "SVP SDM", "Direksi 1/2/3", "Direktur Utama"), and health status limited to
 Direkomendasikan / Tidak Direkomendasikan (NFR-SC-06). U-2026-006 has three candidates: Budi (92, self-nominated) plus Bhima (88) and Lukman (84) from HR's
-recommendation. A proposal must carry 3–5 candidates to be sent.
+recommendation. A proposal must carry 2–5 candidates to be sent.
 
 ## Known limitations
 

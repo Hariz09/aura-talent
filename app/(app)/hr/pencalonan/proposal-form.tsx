@@ -42,8 +42,15 @@ export function ProposalForm({
   const chosen = selected.flatMap((b) => (byBadge.get(b) ? [byBadge.get(b)!] : []));
   const addable = pool.filter((p) => !selected.includes(p.badge));
   const recAddable = addable.filter((p) => recommended.includes(p.badge));
-  const add = (b: string) => b && setSelected((s) => (s.includes(b) ? s : [...s, b]));
-  const [rangeError, setRangeError] = useState(false);
+  const [popup, setPopup] = useState<"range" | "max" | null>(null);
+  const add = (b: string) => {
+    if (!b || selected.includes(b)) return;
+    if (selected.length >= MAX_CANDIDATES) {
+      setPopup("max");
+      return;
+    }
+    setSelected((s) => [...s, b]);
+  };
   const outOfRange = selected.length < MIN_CANDIDATES || selected.length > MAX_CANDIDATES;
   const noteOk = note.trim().length >= MIN_JUSTIFICATION;
 
@@ -55,7 +62,7 @@ export function ProposalForm({
         const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
         if (submitter?.value === "send" && outOfRange) {
           e.preventDefault();
-          setRangeError(true);
+          setPopup("range");
         }
       }}
     >
@@ -211,21 +218,24 @@ export function ProposalForm({
           </SubmitButton>
         </div>
       </div>
-      {rangeError ? (
+      {popup ? (
         <Modal
           title="Pengajuan gagal"
-          subtitle="Usulan belum dapat dikirim ke VP SDM"
+          subtitle={popup === "max" ? "Kandidat tidak dapat ditambahkan" : "Usulan belum dapat dikirim ke VP SDM"}
           width="max-w-[34rem]"
-          onClose={() => setRangeError(false)}
+          onClose={() => setPopup(null)}
         >
           <p className="text-[1.2rem] leading-relaxed">
-            Jumlah kandidat harus {MIN_CANDIDATES}–{MAX_CANDIDATES}. Saat ini {selected.length} kandidat dipilih
-            {selected.length < MIN_CANDIDATES
-              ? `; tambahkan minimal ${MIN_CANDIDATES - selected.length} kandidat lagi.`
-              : `; kurangi ${selected.length - MAX_CANDIDATES} kandidat.`}
+            {popup === "max"
+              ? `Jumlah kandidat maksimal ${MAX_CANDIDATES}. Batalkan salah satu kandidat terlebih dahulu sebelum menambah kandidat lain.`
+              : `Jumlah kandidat harus ${MIN_CANDIDATES}–${MAX_CANDIDATES}. Saat ini ${selected.length} kandidat dipilih${
+                  selected.length < MIN_CANDIDATES
+                    ? `; tambahkan minimal ${MIN_CANDIDATES - selected.length} kandidat lagi dari Daftar Talenta.`
+                    : `; kurangi ${selected.length - MAX_CANDIDATES} kandidat.`
+                }`}
           </p>
           <div className="mt-6 flex justify-end">
-            <button type="button" onClick={() => setRangeError(false)} className={buttonClass("primary")}>
+            <button type="button" onClick={() => setPopup(null)} className={buttonClass("primary")}>
               Mengerti
             </button>
           </div>
