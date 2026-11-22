@@ -36,3 +36,10 @@ body {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
+
+/* The login form draws its own show/hide-password button; hide the browser built-in one (Edge/Chrome). */
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-credentials-auto-fill-button {
+  display: none !important;
+}
