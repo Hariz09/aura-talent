@@ -813,6 +813,24 @@ function createSeed(): Store {
       },
     ],
     "P-MQ": [],
+    "P-MSP": [
+      {
+        badge: "000009",
+        score: 88,
+        reason: "Pengalaman produksi dan konsistensi capaian KPI",
+        gap: "perencanaan strategis",
+        change: "baru",
+        indicators: { asesmen: 88, kinerja: 90, riwayat: 86, pendidikan: 84 },
+      },
+      {
+        badge: "000001",
+        score: 76,
+        reason: "Pengalaman produksi lintas lini",
+        gap: "perencanaan produksi",
+        change: "baru",
+        indicators: { asesmen: 78, kinerja: 80, riwayat: 74, pendidikan: 72 },
+      },
+    ],
     "P-MPJ": [
       {
         badge: "000012",
