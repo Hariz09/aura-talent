@@ -11,6 +11,7 @@ import {
   isCategoryDeterminable,
   matchesFor,
   proposalForVacancy,
+  recommendationFor,
 } from "@/lib/queries";
 import { requireRole } from "@/lib/session";
 import { ProposalForm, type PoolItem } from "./proposal-form";
@@ -22,7 +23,7 @@ async function PencalonanHr({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  await requireRole("hr");
+  const { user } = await requireRole("hr");
   const sp = await searchParams;
   const store = db();
 
@@ -99,6 +100,8 @@ async function PencalonanHr({
   const recs = store.recommendations[position.id] ?? [];
   const pool: PoolItem[] = store.employees
     .filter(isCategoryDeterminable)
+    // HR does not put themselves forward (conflict of interest).
+    .filter((e) => e.badge !== user.badge)
     .map((e) => {
       // A nomination already rejected by the atasan no longer counts as submitted.
       const nomination = activeNomination(e.badge, position.id);
@@ -108,7 +111,7 @@ async function PencalonanHr({
         badge: e.badge,
         name: e.name,
         position: e.position,
-        score: rec?.score,
+        score: recommendationFor(position.id, e.badge)?.score,
         category:
           rec || matchesFor(e).some((m) => m.position.id === position.id) ? categoryFor(position.id, e.badge) : "Talenta",
         source: nomination?.source ?? (rec ? "HR (Rekomendasi)" : "HR (Daftar Talenta)"),

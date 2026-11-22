@@ -307,13 +307,15 @@ function nextProposalId() {
 }
 
 export async function submitProposal(_: FormState, fd: FormData): Promise<FormState> {
-  await assertRole("hr");
+  const ctx = await assertRole("hr");
   const vacancyId = str(fd, "vacancyId");
   const mode = str(fd, "mode") === "save" ? "save" : "send";
   const note = str(fd, "note");
   const badges = [...new Set(fd.getAll("badge").map(String))];
   const position = getPosition(vacancyId);
   if (!position) return { error: "Jabatan tujuan tidak ditemukan." };
+  if (ctx.user.badge && badges.includes(ctx.user.badge))
+    return { error: "HR tidak dapat mengusulkan dirinya sendiri. Keluarkan nama Anda dari daftar kandidat." };
   const existing = proposalForVacancy(vacancyId);
   if (existing && existing.stage !== "draft")
     return { error: `Usulan ${existing.id} sudah dikirim untuk jabatan ini.` };

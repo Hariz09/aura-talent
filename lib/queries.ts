@@ -6,6 +6,7 @@ import {
   addDays,
   daysBetween,
   db,
+  estimateReadiness,
   type Employee,
   type MatchCategory,
   type Nomination,
@@ -204,10 +205,23 @@ export function proposalsForBadge(badge: string) {
 }
 
 export function recommendationFor(vacancyId: string, badge: string) {
-  return (
+  const listed =
     db().recommendations[vacancyId]?.find((r) => r.badge === badge) ??
-    db().proposalRecommendations[vacancyId]?.find((r) => r.badge === badge)
-  );
+    db().proposalRecommendations[vacancyId]?.find((r) => r.badge === badge);
+  if (listed) return listed;
+  // Not on a ranked list for this vacancy: derive a score from the employee's data.
+  const e = getEmployee(badge);
+  if (!e || !isCategoryDeterminable(e)) return undefined;
+  const category = matchesFor(e).find((m) => m.position.id === vacancyId)?.category ?? "Match";
+  const est = estimateReadiness(e, category);
+  return {
+    badge,
+    score: est.score,
+    reason: e.strengths || "Kinerja dan asesmen sesuai kebutuhan jabatan",
+    gap: (getPosition(vacancyId)?.developmentArea ?? "-").replace(/^-$/, "pengalaman lintas fungsi").toLowerCase(),
+    change: "baru" as const,
+    indicators: est.indicators,
+  };
 }
 
 /** Category shown next to a candidate: derived from the readiness score when one exists. */

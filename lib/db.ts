@@ -790,12 +790,12 @@ function createSeed(): Store {
         indicators: { asesmen: 90, kinerja: 92, riwayat: 90, pendidikan: 88 },
       },
       {
-        badge: "000006",
+        badge: "000012",
         score: 86,
-        reason: "Pengelolaan data dan pelaporan baik",
-        gap: "pengalaman fungsi keuangan",
+        reason: "Kinerja unggul dan pelaporan baik",
+        gap: "perencanaan strategis",
         change: "baru",
-        indicators: { asesmen: 86, kinerja: 87, riwayat: 82, pendidikan: 88 },
+        indicators: { asesmen: 86, kinerja: 90, riwayat: 80, pendidikan: 84 },
       },
       {
         badge: "000002",
@@ -1349,7 +1349,6 @@ function createSeed(): Store {
    * seeded employee data so that Approvers see a number (they are allowed to), kept inside the band of
    * the candidate's match category: Match 85-95, Partial Match 70-84, Less Match below 70.
    */
-  const GRADE_POINTS: Record<string, number> = { A: 94, B: 86, C: 74, D: 62 };
   const proposalRecommendations: Record<string, Recommendation[]> = {};
   for (const p of proposals) {
     if (p.vacancyId in recommendations || p.vacancyId in proposalRecommendations) continue;
@@ -1357,24 +1356,16 @@ function createSeed(): Store {
     proposalRecommendations[p.vacancyId] = p.candidates.flatMap((c) => {
       const e = employees.find((x) => x.badge === c.badge);
       if (!e) return [];
-      const grades = [e.grades[2024], e.grades[2025]].map((g) => GRADE_POINTS[g ?? "C"] ?? 74);
-      const kinerja = Math.round((grades[0] + grades[1]) / 2);
-      const asesmen = e.assessment?.result === "Direkomendasikan" ? 90 : 72;
-      const steps = e.history ? e.history.split(" · ").length : 0;
-      const riwayat = Math.min(92, 74 + steps * 5);
-      const pendidikan = e.education.startsWith("S2") ? 90 : 84;
-      const raw = Math.round(kinerja * 0.4 + asesmen * 0.3 + riwayat * 0.2 + pendidikan * 0.1);
       const category = (matches[c.badge] ?? []).find((m) => m.positionId === p.vacancyId)?.category ?? "Match";
-      const score =
-        category === "Match" ? Math.min(95, Math.max(85, raw)) : category === "Partial Match" ? Math.min(84, Math.max(70, raw)) : Math.min(69, raw);
+      const est = estimateReadiness(e, category);
       return [
         {
           badge: c.badge,
-          score,
+          score: est.score,
           reason: e.strengths || "Kinerja dan asesmen sesuai kebutuhan jabatan",
           gap: (vacancy?.developmentArea && vacancy.developmentArea !== "-" ? vacancy.developmentArea : "pengalaman lintas fungsi").toLowerCase(),
           change: "baru" as const,
-          indicators: { asesmen, kinerja, riwayat, pendidikan },
+          indicators: est.indicators,
         },
       ];
     });
@@ -1408,6 +1399,30 @@ function createSeed(): Store {
     notifs,
     piSmartSync: { at: "2026-10-31T01:00", failed: true },
   };
+}
+
+const GRADE_POINTS: Record<string, number> = { A: 94, B: 86, C: 74, D: 62 };
+
+/**
+ * Readiness score derived from an employee's data, kept inside the band of the match category:
+ * Match 85-95, Partial Match 70-84, Less Match below 70. Used for the seeded proposals and as a
+ * fallback so a candidate outside a ranked list still shows a number (Approver and HR may see it).
+ */
+export function estimateReadiness(e: Employee, category: MatchCategory) {
+  const grades = [e.grades[2024], e.grades[2025]].map((g) => GRADE_POINTS[g ?? "C"] ?? 74);
+  const kinerja = Math.round((grades[0] + grades[1]) / 2);
+  const asesmen = e.assessment?.result === "Direkomendasikan" ? 90 : 72;
+  const steps = e.history ? e.history.split(" · ").length : 0;
+  const riwayat = Math.min(92, 74 + steps * 5);
+  const pendidikan = e.education.startsWith("S2") ? 90 : 84;
+  const raw = Math.round(kinerja * 0.4 + asesmen * 0.3 + riwayat * 0.2 + pendidikan * 0.1);
+  const score =
+    category === "Match"
+      ? Math.min(95, Math.max(85, raw))
+      : category === "Partial Match"
+        ? Math.min(84, Math.max(70, raw))
+        : Math.min(69, raw);
+  return { score, indicators: { asesmen, kinerja, riwayat, pendidikan } };
 }
 
 const g = globalThis as unknown as { __auraStore?: Store };

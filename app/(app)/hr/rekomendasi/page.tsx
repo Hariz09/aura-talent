@@ -103,7 +103,8 @@ async function RekomendasiPage({
             </p>
             <div className="mt-6 flex flex-wrap gap-4">
               <ButtonLink href="/hr/repository">Tinjau Repository</ButtonLink>
-              <DisabledButton>Ajukan Pencalonan</DisabledButton>
+              <DisabledButton>Susun usulan</DisabledButton>
+              <span className="text-base text-muted">Belum ada kandidat yang bisa diusulkan untuk jabatan ini.</span>
             </div>
           </Card>
           <p className="text-[1.1rem] text-muted">Tindak lanjut: lengkapi data yang kurang dan tinjau kebutuhan pengembangan kandidat.</p>
