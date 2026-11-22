@@ -110,7 +110,7 @@ async function AntreanPage({
             {rows.length === 0 ? (
               <tr>
                 <Td colSpan={7} className="text-muted">
-                  Tidak ada usulan yang menunggu keputusan.
+                  {notesStage ? "Tidak ada usulan yang menunggu catatan." : "Tidak ada usulan yang menunggu keputusan."}
                 </Td>
               </tr>
             ) : null}

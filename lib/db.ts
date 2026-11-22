@@ -1319,7 +1319,7 @@ function createSeed(): Store {
   ];
 
   const notifs: Notif[] = [
-    { id: "n1", role: "vp", kind: "Pengingat persetujuan", title: "U-2026-006 · Manajer Produksi", body: "Batas keputusan VP terlewati 1 hari.", at: "2026-12-04T06:00", proposalId: "U-2026-006", read: false },
+    { id: "n1", role: "vp", kind: "Pengingat persetujuan", title: "U-2026-006 · Manajer Produksi", body: "Batas pemberian catatan VP terlewati 1 hari.", at: "2026-12-04T06:00", proposalId: "U-2026-006", read: false },
     { id: "n2", role: "vp", kind: "Usulan baru", title: "U-2026-007 · Manajer Operasi", body: "Menunggu catatan VP SDM.", at: "2026-12-03T09:00", proposalId: "U-2026-007", read: false },
     { id: "n3", role: "vp", kind: "Usulan baru", title: "U-2026-008 · Manajer SDM", body: "Menunggu catatan VP SDM.", at: "2026-12-04T09:00", proposalId: "U-2026-008", read: false },
     { id: "n3b", role: "pihc", kind: "Usulan baru", title: "U-2026-003 · Manajer Operasi Produksi", body: "Calon ditetapkan: Bhima Adiputra. Menunggu persetujuan akhir PIHC.", at: "2026-12-03T10:00", proposalId: "U-2026-003", read: false },
@@ -1335,7 +1335,7 @@ function createSeed(): Store {
     { id: "n13", role: "svp", kind: "Usulan baru", title: "U-2026-009 · Manajer Anggaran", body: "Menunggu keputusan SVP SDM. Jatuh tempo hari ini.", at: "2026-12-02T10:00", proposalId: "U-2026-009", read: false },
     { id: "n14", role: "direksi1", kind: "Usulan baru", title: "U-2026-016 · Manajer Pelatihan", body: "Menunggu keputusan Direksi 1.", at: "2026-12-04T09:00", proposalId: "U-2026-016", read: false },
     { id: "n15", role: "direksi2", kind: "Usulan baru", title: "U-2026-017 · Manajer Administrasi", body: "Menunggu keputusan Direksi 2.", at: "2026-12-03T10:00", proposalId: "U-2026-017", read: false },
-    { id: "n16", role: "direksi3", kind: "Pengingat persetujuan", title: "U-2026-012 · Manajer Teknologi Informasi", body: "Batas keputusan Direksi 3 terlewati 3 hari.", at: "2026-12-04T06:00", proposalId: "U-2026-012", read: false },
+    { id: "n16", role: "direksi3", kind: "Pengingat persetujuan", title: "U-2026-012 · Manajer Teknologi Informasi", body: "Batas pemberian catatan Direksi 3 terlewati 3 hari.", at: "2026-12-04T06:00", proposalId: "U-2026-012", read: false },
     { id: "n17", role: "dirut", kind: "Usulan baru", title: "U-2026-013 · Manajer Penjualan", body: "Menunggu pemilihan dan penetapan calon Direktur Utama.", at: "2026-12-04T09:00", proposalId: "U-2026-013", read: false },
     { id: "n18", role: "pihc", kind: "Usulan baru", title: "U-2026-014 · Manajer Gudang", body: "Calon ditetapkan: Andi Saputra. Kelengkapan persyaratan belum terpenuhi.", at: "2026-12-04T09:00", proposalId: "U-2026-014", read: false },
     { id: "n19", role: "hr", kind: "Usulan ditolak PIHC", title: "U-2026-010 · Manajer Pemeliharaan", body: "PIHC menolak calon Andi Saputra: wawancara, kesehatan, dan LHKPN belum lengkap.", at: "2026-12-04T13:00", proposalId: "U-2026-010", read: false },
