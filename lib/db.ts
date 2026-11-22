@@ -813,6 +813,32 @@ function createSeed(): Store {
       },
     ],
     "P-MQ": [],
+    "P-MPJ": [
+      {
+        badge: "000012",
+        score: 91,
+        reason: "Kinerja unggul dua tahun berturut-turut",
+        gap: "pengalaman pemasaran",
+        change: "baru",
+        indicators: { asesmen: 92, kinerja: 95, riwayat: 88, pendidikan: 90 },
+      },
+      {
+        badge: "000004",
+        score: 86,
+        reason: "Kinerja dan asesmen kuat",
+        gap: "pengalaman pemasaran",
+        change: "baru",
+        indicators: { asesmen: 88, kinerja: 88, riwayat: 82, pendidikan: 86 },
+      },
+      {
+        badge: "000001",
+        score: 78,
+        reason: "Pengalaman produksi lintas lini",
+        gap: "pengalaman pemasaran",
+        change: "baru",
+        indicators: { asesmen: 80, kinerja: 82, riwayat: 76, pendidikan: 74 },
+      },
+    ],
     // Predicted vacancy whose lowongan HR has not opened: HR may still propose it closed.
     "P-SPM": [
       {
@@ -1082,6 +1108,12 @@ function createSeed(): Store {
           { at: "2026-11-30T10:00", stage: "direksi1", action: "Disetujui", note: "Seluruh kandidat diteruskan" },
           { at: "2026-12-02T10:00", stage: "direksi2", action: "Disetujui", note: "Seluruh kandidat diteruskan" },
           { at: "2026-12-03T10:00", stage: "direksi3", action: "Disetujui", note: "Seluruh kandidat diteruskan" },
+        ],
+        [
+          { stage: "vp", badge: "000012", text: "Kinerja unggul; pertimbangkan penugasan lintas unit." },
+          { stage: "vp", badge: "000004", text: "Perlu pengalaman pemasaran sebagai pengembangan." },
+          { stage: "svp", badge: "000012", text: "Lanjutkan verifikasi. Perkuat pengalaman pemasaran." },
+          { stage: "direksi1", badge: "000001", text: "Pengalaman produksi dapat mendukung perencanaan penjualan." },
         ],
       ),
     },
