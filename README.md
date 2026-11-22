@@ -47,10 +47,9 @@ All accounts use the password **`password`**. They are also listed under "Akun d
 | `atasan` | Atasan + Karyawan | Subordinate matches, nominating (sample: Rizky Pratama → Manajer Produksi), read-only status |
 | `vp` | VP SDM + Atasan + Karyawan | Three-role picker; first approval step |
 | `svp` | SVP SDM | Second approval step |
-| `direksi1` | Direksi 1 | Compare candidates and select one; view notes |
-| `direksi2`, `direksi3` | Direksi 2 / 3 | Approve the selected candidate |
-| `dirut` | Direktur Utama | Designate the final candidate |
-| `pihc` | PIHC | Final approval (needs interview, health, and LHKPN complete) |
+| `direksi1`, `direksi2`, `direksi3` | Direksi 1 / 2 / 3 | Approve and forward all candidates with a note per candidate (same form as VP / SVP) |
+| `dirut` | Direktur Utama | Compare candidates, choose one, then designate; can request an interview (proposal becomes "Ditahan") |
+| `pihc` | PIHC | Final approval (needs interview, health, and LHKPN complete) or **Tolak** with a reason (final status "Ditolak PIHC") |
 | `maya` | Karyawan | Assessment and health "Tidak Direkomendasikan", KPI 2025 not achieved, Less Match |
 | `fajar` | Karyawan | Only the 2024 final grade and no assessment, so the category cannot be determined |
 | `citra` | Karyawan | Complete data and documents; accepted self-nomination (N-005) and nominated by atasan (N-007); winner of the finished proposal U-2026-015 |
@@ -64,22 +63,25 @@ covers every approval stage so each approver queue has something to review:
 | Proposal | Stage | Scenario |
 | --- | --- | --- |
 | U-2026-009 Manajer Anggaran | SVP | Due today (SLA boundary) |
-| U-2026-010 Manajer Pemeliharaan | Direksi 1 | Returned after PIHC rejected the designated candidate (reason in the log, visible to HR and approvers) |
-| U-2026-011 Manajer K3 | Direksi 2 | 1 day left; interview already scheduled (08/12/2026) and Direksi interview request |
+| U-2026-010 Manajer Pemeliharaan | Ditolak PIHC | Final rejection (reason in the log, visible to HR and approvers only) |
+| U-2026-011 Manajer K3 | Dirut | "Ditahan": Dirut asked for an interview (scheduled 08/12/2026); resumes once every candidate's interview result is uploaded |
 | U-2026-012 Manajer Teknologi Informasi | Direksi 3 | Overdue by 3 days (SLA escalation) |
-| U-2026-013 Manajer Penjualan | Dirut | Waiting for designation |
+| U-2026-013 Manajer Penjualan | Dirut | Waiting for the Dirut to compare and choose a candidate |
+| U-2026-016 Manajer Pelatihan | Direksi 1 | 2 days left |
+| U-2026-017 Manajer Administrasi | Direksi 2 | 1 day left |
 | U-2026-014 Manajer Gudang | PIHC | Designated candidate (Andi) has no documents, so **Setujui** stays disabled |
 | U-2026-015 Manajer Akuntansi | Selesai | Final approval already given |
 
-Nominations: N-005 (self, accepted), N-006 (self, rejected by atasan), N-007 (by Atasan Langsung), plus the earlier
+Nominations: N-005 (self, accepted), N-006 (self, rejected by atasan, reason required), N-007 (by Atasan Langsung), plus the earlier
 pending ones (N-001 to N-004). Assessment `validUntil` is display-only and not enforced, so there is no expiry scenario.
 
 ### Suggested end-to-end walkthrough
 
 1. Log in as `hr` → **Pencalonan** → choose *Manajer Keuangan* → add 2–5 candidates (otherwise a "Pengajuan gagal" pop-up appears) and a note of 50+
    characters → **Kirim Usulan**.
-2. Approve in order as `vp`, `svp`, `direksi1` (select one candidate), `direksi2`, `direksi3`, `dirut`
-   (designate), using **Menunggu keputusan** → **Tinjau**.
+2. Approve in order as `vp`, `svp`, `direksi1`, `direksi2`, `direksi3` (each adds a note per candidate and forwards all
+   candidates), then `dirut` (**Bandingkan** → choose one candidate → **Simpan pilihan & lanjutkan** → **Tetapkan calon &
+   lanjutkan**), using **Menunggu keputusan** → **Tinjau**.
 3. As `pihc`, a sample proposal (U-2026-003, Bhima designated, documents complete) is ready to approve. For
    U-2026-006 and any proposal you push through, **Setujui** stays disabled until the designated candidate has
    interview, health, and LHKPN on file; complete them as `hr` under **Repository → Buka detail**.
@@ -121,7 +123,7 @@ figma/                      exported design frames used as the reference
   every read. Pages call `requireRole(group)`; Server Actions call `assertRole(...)`.
 - **Cache Components:** session reads happen at request time, so the shell and every page stream in behind
   `<Suspense>` (layout + `app/(app)/loading.tsx`).
-- **Workflow:** a proposal moves `draft → vp → svp → direksi1 → direksi2 → direksi3 → dirut → pihc → selesai`.
+- **Workflow:** a proposal moves `draft → vp → svp → direksi1 → direksi2 → direksi3 → dirut → pihc → selesai`, or `ditolak` when PIHC rejects.
   Each stage has a 2-day SLA, and advancing a stage notifies the next approver's role.
 - **"Today":** the app treats today as **4 December 2026** (`TODAY` in `lib/db.ts`) so SLA and overdue figures
   match the design.
